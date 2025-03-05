@@ -1,0 +1,40 @@
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+data = pd.read_csv("Salary_Data.csv")
+x, y = data['YearsExperience'], data['Salary']
+print(data.head())
+
+
+B1 = np.cov(x, y, bias=True)[0, 1] / np.var(x, ddof=0)
+B0 = y.mean() - B1 * x.mean()
+R = np.corrcoef(x, y)[0, 1]
+
+
+print(f"Regression line: y = {B0:.3f} + {B1:.3f}x")
+print(f"Correlation Coeff: {R:.4f}")
+print(f"GOODNESS OF FIT: {R ** 2:.4f}")
+
+
+plt.figure(figsize=(12, 5))
+plt.scatter(x, y, s=300, edgecolor="black")
+plt.plot(x, B0 + B1 * x, 'r', linewidth=5, alpha=0.5)
+plt.scatter(x.mean(), y.mean(), marker='*', s=100, c='r')
+
+
+plt.text(1, 100000, f"x Mean: {x.mean():.2f} Years\n"
+         f"y Mean: {y.mean():.2f}\nR: {R:.4f}\nR^2: {R**2:.4f}\n"
+         f"y = {B0:.3f} + {B1:.3f}x", fontsize=12,
+         bbox={'facecolor': 'grey', 'alpha': 0.2, 'pad': 10})
+
+
+plt.title('How Experience Affects Salary')
+plt.xlabel('Years of Experience', fontsize=15)
+plt.ylabel('Salary', fontsize=15)
+plt.show()
+
+
+print(f"Predicted Salary for 55 years of experience: {B0 + B1 * 55:.2f}")
